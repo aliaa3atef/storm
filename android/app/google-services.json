@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "836358738901",
+    "project_id": "storm-72947",
+    "storage_bucket": "storm-72947.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:836358738901:android:f8dda8615b21a0777de35c",
+        "android_client_info": {
+          "package_name": "com.example.storm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "836358738901-j7iabls79t20g5l0g1ro8u4kupufr9q5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEyErlSJZqkSqypJx9krWdsLqj6LZYniI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "836358738901-j7iabls79t20g5l0g1ro8u4kupufr9q5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
