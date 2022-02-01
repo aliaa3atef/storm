@@ -1,33 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:storm/common/colors/colors.dart';
 
-class DefualtButton extends StatelessWidget {
-
-
+class DefaultButton extends StatelessWidget {
   double width = double.infinity;
-      Color color = Colors.amber;
-   Widget child;
-   Function fun;
+  Color color = basicColor;
+  Widget child;
+  Function fun;
 
-   DefualtButton({
-     this.width = double.infinity,
-     this.color = Colors.amber,
-  @required  this.child,
-  @required  this.fun,
+  DefaultButton({
+    this.width = double.infinity,
+    this.color = basicColor,
+    @required this.child,
+    @required this.fun,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: MaterialButton(
-              height: 45.0,
-              minWidth: width,
-              color: color,
-              child: child,
-              onPressed: fun),
-        );
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      child: MaterialButton(
+          height: 45.0,
+          minWidth: width,
+          color: color,
+          child: child,
+          onPressed: fun),
+    );
   }
 }

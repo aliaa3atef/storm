@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:storm/common/colors/colors.dart';
 
 class DefaultTextFormField extends StatelessWidget {
 
@@ -41,11 +42,15 @@ class DefaultTextFormField extends StatelessWidget {
         controller: controller,
         decoration: InputDecoration(
           suffixIcon: IconButton(
-            icon: Icon(suffixicon),
+            icon: Icon(suffixicon,color: basicColor,),
             onPressed: sufOnPressed,
           ),
-          prefixIcon: prefixicon,
+          prefixIcon: Icon(prefixicon.icon,color: basicColor,),
           hintText: hint,
+           hintStyle: TextStyle(
+             color: Colors.grey
+           ),
+
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),

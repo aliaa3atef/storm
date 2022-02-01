@@ -1,12 +1,16 @@
+
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:storm/app/modules/register_screen/cubit/register_cubit.dart';
-import 'package:storm/app/modules/register_screen/cubit/register_cubit_states.dart';
+import 'package:storm/app/modules/login_screen/login_screen.dart';
+import 'package:storm/common/colors/colors.dart';
 import 'package:storm/common/ui/DefualtTextButton.dart';
 import 'package:storm/common/ui/DefualtTextFormField.dart';
 import 'package:storm/common/ui/TitleText.dart';
+import 'package:storm/common/ui/methods.dart';
+
+import 'cubit/register_cubit.dart';
+import 'cubit/register_cubit_states.dart';
 
 class RegisterScreen extends StatelessWidget {
   final TextEditingController email = TextEditingController();
@@ -18,13 +22,15 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SocialRegisterCubit(),
-      child: BlocConsumer<SocialRegisterCubit, SocialRegisterStates>(
+      create: (context) => RegisterCubit(),
+      child: BlocConsumer<RegisterCubit, RegisterStates>(
         listener: (context, state) {},
         builder: (context, state) {
-          var cubit = SocialRegisterCubit.get(context);
+          var cubit = RegisterCubit.get(context);
           return Scaffold(
-            appBar: AppBar(),
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+            ),
             body: Form(
               key: keysss,
               child: SingleChildScrollView(
@@ -33,15 +39,15 @@ class RegisterScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TitleText('Register'),
-                      SizedBox(
-                        height: 30.0,
+                      Text('Register with your email',style: Theme.of(context).textTheme.headline2,),
+                      const SizedBox(
+                        height: 50.0,
                       ),
                       DefaultTextFormField(
                         hint: 'User Name',
                         validate: (value) {
                           if (value.isEmpty) {
-                            return 'Enter the Username';
+                            return 'User Name Must Not Be Empty';
                           }
                           return null;
                         },
@@ -49,15 +55,17 @@ class RegisterScreen extends StatelessWidget {
                         controller: name,
                         type: TextInputType.text,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15.0,
                       ),
                       DefaultTextFormField(
-                        hint: 'Email',
-                        validate: (value) {
+                       hint: 'email@example.com',
+                        validate: (String value) {
                           if (value.isEmpty) {
-                            return 'Enter the Email';
+                            return 'Email Address Must Not Be Empty';
                           }
+                          if(!value.contains('@')||(value.contains('@')&&value.split('@').first.length==0)||!value.contains('.')||(value.contains('.')&&value.split('.').first.length-value.split('@').first.length==1)||value.contains(' ')||value.split('.').last.length==0)
+                            return 'Email address must be like email@example.com';
                           return null;
                         },
                         prefixicon: Icon(Icons.email),
@@ -77,11 +85,11 @@ class RegisterScreen extends StatelessWidget {
                         },
                         prefixicon: Icon(Icons.lock),
                         controller: pass,
-                        type: TextInputType.emailAddress,
+                        type: TextInputType.visiblePassword,
                         hint: 'password',
-                        validate: (value) {
-                          if (value.isEmpty) {
-                            return 'Enter the Password';
+                        validate: (String value) {
+                          if (value.length<6) {
+                            return 'Password must be more than 6 characters';
                           }
                           return null;
                         },
@@ -94,22 +102,20 @@ class RegisterScreen extends StatelessWidget {
                         controller: phone,
                         type: TextInputType.phone,
                         hint: 'Phone',
-                        validate: (value) {
-                          if (value.isEmpty) {
-                            return 'Enter the Phone';
+                        validate: (String value) {
+                          if (value.length!=11) {
+                            return 'Phone must be 11 digit';
                           }
                           return null;
                         },
                       ),
                       SizedBox(
-                        height: 15.0,
+                        height: 30.0,
                       ),
-
-
                       ConditionalBuilder(
-                        condition: state is !SocialRegisterLoadingState,
-                        builder: (context) => DefualtButton(
-                            color: Colors.amber,
+                        condition: state is !RegisterLoadingState,
+                        builder: (context) => DefaultButton(
+                            color: basicColor,
                             fun: () {
                               if (keysss.currentState.validate()) {
                                 cubit.createUserRegister(
@@ -121,8 +127,33 @@ class RegisterScreen extends StatelessWidget {
                                 );
                               }
                             },
-                            child: Text('Register')),
+                            child: Text('Register'.toUpperCase() ,style: Theme.of(context).textTheme.bodyText2,)),
                         fallback: (context) => Center(child: CircularProgressIndicator()),
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Already have an account?',
+                            style: Theme.of(context).textTheme.subtitle2,
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                NavigateTo(context, LoginScreen());
+                              },
+                              child: Text(
+                                'Login now',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1
+                                    .copyWith(
+                                  color: basicColor,
+                                ),
+                              ))
+                        ],
                       ),
                     ],
                   ),

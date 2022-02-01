@@ -14,7 +14,7 @@ class Notifications {
         channelKey: 'basic_channel',
         channelName: 'chat_channel',
         channelShowBadge: true,
-        defaultColor: defColor,
+        defaultColor: basicColor,
         importance: NotificationImportance.High,
         enableVibration: true,
 

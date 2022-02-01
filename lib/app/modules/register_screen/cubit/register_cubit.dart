@@ -1,52 +1,61 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:storm/app/models/login_model.dart';
 import 'package:storm/app/modules/register_screen/cubit/register_cubit_states.dart';
 import 'package:storm/common/helper/Cache_Helper.dart';
 import 'package:storm/common/helper/constants.dart';
 import 'package:storm/common/ui/methods.dart';
+import 'package:storm/layout/home_layout.dart';
 
 
-class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
-  SocialRegisterCubit() : super(SocialRegisterInitalState());
+class RegisterCubit extends Cubit<RegisterStates> {
+  RegisterCubit() : super(RegisterInitalState());
 
-  static SocialRegisterCubit get(context) => BlocProvider.of(context);
+  static RegisterCubit get(context) => BlocProvider.of(context);
 
   bool isPassword = true;
 
   void setVis() {
     isPassword = !isPassword;
-    emit(SocialRegisterChangeVisPassState());
+    emit(RegisterChangeVisPassState());
   }
 
+  void createUserRegister({
+    @required context,
+    @required String name,
+    @required String phone,
+    @required String email,
+    @required String password,
+  }) async {
+    if (await checkInternet()) {
+      emit(RegisterLoadingState());
 
-  void createUserRegister({@required context,@required String name,@required String phone,@required String email,@required String password,}) {
-      emit(SocialRegisterLoadingState());
-
-      FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email,
-          password: password
-      ).then((value) {
-        print(value.user.email + " "+value.user.uid);
+      FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) {
+        print(value.user.email + " " + value.user.uid);
         uId = value.user.uid;
         Cache_Helper.setData('uid', uId);
         saveUserRegister(
+          context: context,
           uid: value.user.uid,
-          email:email,
+          email: email,
           name: name,
           phone: phone,
-          image:'https://image.freepik.com/free-photo/portrait-smiling-young-man-eyewear_171337-4842.jpg',
-          cover: 'https://image.freepik.com/free-photo/confused-lovely-female-teenager-holds-chin-looks-thoughtfully-aside-has-dark-hair-wears-striped-sweater-isolated-white-wall_273609-16546.jpg',
-          bio: 'write some bio......',
+          image:
+              'https://image.freepik.com/free-photo/portrait-smiling-young-man-eyewear_171337-4842.jpg',
         );
-        NavigateToAndKill(context,SocialLayout());
-        emit(SocialRegisterSuccessState(false));
-      }).catchError((onError){
-
-        emit(SocialRegisterErrorState());
+        NavigateToAndKill(context, HomeLayout());
+        emit(RegisterSuccessState(false));
+      }).catchError((onError) {
+        toastMessage(msg: 'Invalid Data', state: 2);
+        emit(RegisterErrorState());
       });
+    } else
+      showSnackBar(context);
   }
 
   void saveUserRegister({
@@ -56,20 +65,23 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
     @required String email,
     @required String uid,
     @required String image,
-    @required String cover,
-    @required String bio,
-  }) {
-    emit(SocialRegisterLoadingState());
-    Map<String,dynamic> data =LoginModel(name,phone,email,uid,image,cover,bio,false).toMap();
-    FirebaseFirestore.instance.collection('users').doc(uid).set(
-      data
-    ).then((value) {
-
-      emit(SocialRegisterSuccessState(true));
-    }).catchError((onError){
-      print(onError.toString());
-      emit(SocialRegisterErrorState());
-    });
+  }) async {
+    if (await checkInternet()) {
+      emit(RegisterLoadingState());
+      Map<String, dynamic> data =
+      LoginModel(name, phone, email, uid, image,
+          '', '', false).toMap();
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .set(data)
+          .then((value) {
+        emit(RegisterSuccessState(true));
+      }).catchError((onError) {
+        toastMessage(msg: 'Something Went Wrong', state: 2);
+        emit(RegisterErrorState());
+      });
+    } else
+      showSnackBar(context);
   }
-
 }
