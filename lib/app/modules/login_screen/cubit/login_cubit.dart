@@ -36,6 +36,7 @@ class LoginCubit extends Cubit<LoginStates> {
           idToken: googleAuth.idToken,
         );
 
+
         FirebaseAuth.instance.signInWithCredential(credential).then((value) {
           if (value.user.uid != null) {
             uId = value.user.uid;
@@ -63,6 +64,7 @@ class LoginCubit extends Cubit<LoginStates> {
       showSnackBar(context);
   }
 
+
   void saveUserRegister({
     @required context,
     @required String name,
@@ -72,13 +74,22 @@ class LoginCubit extends Cubit<LoginStates> {
     @required String image,
   }) async {
     if (await checkInternet()) {
+      if(await currentPageNotAvailable(currentPage,context))
+      {
+        currentPage+=1;
+        await updatePageCounter(currentPage,context);
+        await createNewPage(context);
+      }
       Map<String, dynamic> data =
       LoginModel(name, phone??'0123456789', email, uid, image,'','',true).toMap();
       FirebaseFirestore.instance
           .collection('users')
+          .doc('page ${currentPage}')
+          .collection('users')
           .doc(uid)
           .set(data)
           .then((value) {
+        updatePageSize(context);
       }).catchError((onError) {
         print(onError.toString());
       });
@@ -90,18 +101,21 @@ class LoginCubit extends Cubit<LoginStates> {
   {
     if(await checkInternet())
       {
-        QuerySnapshot<Map<String,dynamic>> data=await FirebaseFirestore.instance
-            .collection("users")
-            .where('uid',isEqualTo: uid)
-            .get();
+        for(int i = 1 ; i <=currentPage;i++)
+          {
+            QuerySnapshot<Map<String,dynamic>> data=await FirebaseFirestore.instance
+                .collection("users")
+                .doc('page ${i}')
+                .collection('users')
+                .where('uid',isEqualTo: uid)
+                .get();
 
-        if(data.docs.length==0)
-          return true;
+            if(data.docs.length==0)
+              return true;
+          }
+
       }else
-        {
           showSnackBar(context);
-        }
-
 
    return false;
 
@@ -128,4 +142,90 @@ class LoginCubit extends Cubit<LoginStates> {
     } else
       showSnackBar(context);
   }
+
+  Future<void> createNewPage(context)async{
+    if(await checkInternet())
+    {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('page ${currentPage}')
+          .set({'size': 0 });
+      getCurrentPageSize(context);
+    }else
+      showSnackBar(context);
+  }
+
+  Future<void> updatePageCounter(currentPage,context)async
+  {
+    if(await checkInternet())
+    {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('pageCounter')
+          .update(
+          {'pageCounter': currentPage}
+      );
+    }else
+      showSnackBar(context);
+  }
+
+  Future<bool> currentPageNotAvailable(int currentPage,context)async
+  {
+    if(await checkInternet())
+    {
+      DocumentSnapshot<Map<String,dynamic>> data = await FirebaseFirestore.instance
+          .collection('users')
+          .doc('page ${currentPage}')
+          .get();
+
+      return (data.data()['size']==20);
+    }else
+      showSnackBar(context);
+  }
+
+  int currentPageSize=0;
+  void getCurrentPageSize(context)async
+  {
+    print('currentpage is ${currentPage}');
+    if (await checkInternet()) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc('page ${currentPage}')
+          .get()
+          .then((value) {
+        currentPageSize = value.data()['size'];
+      });
+    }else
+      showSnackBar(context);
+
+  }
+
+
+  Future<void> updatePageSize(context)async
+  {
+    if (await checkInternet()) {
+      currentPageSize+=1;
+     await FirebaseFirestore.instance
+          .collection('users')
+          .doc('page ${currentPage}')
+          .update({'size':currentPageSize});
+    }else
+      showSnackBar(context);
+  }
+  int currentPage=1;
+  Future<void> getCurrentPage(context)async
+  {
+    if (await checkInternet()) {
+     DocumentSnapshot<Map<String,dynamic>>data = await FirebaseFirestore.instance
+          .collection('users')
+          .doc('pageCounter')
+          .get();
+
+     currentPage=data.data()['pageCounter'];
+     getCurrentPageSize(context);
+    }else
+      showSnackBar(context);
+
+  }
+
 }

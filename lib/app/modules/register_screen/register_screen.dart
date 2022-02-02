@@ -22,7 +22,7 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RegisterCubit(),
+      create: (context) => RegisterCubit()..getCurrentPage(context),
       child: BlocConsumer<RegisterCubit, RegisterStates>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -118,13 +118,15 @@ class RegisterScreen extends StatelessWidget {
                             color: basicColor,
                             fun: () {
                               if (keysss.currentState.validate()) {
-                                cubit.createUserRegister(
-                                  name: name.text,
-                                  phone: phone.text,
-                                  email: email.text,
-                                  password: pass.text,
-                                  context: context,
-                                );
+
+                                    cubit.createUserRegister(
+                                      name: name.text,
+                                      phone: phone.text,
+                                      email: email.text,
+                                      password: pass.text,
+                                      context: context,
+                                    );
+
                               }
                             },
                             child: Text('Register'.toUpperCase() ,style: Theme.of(context).textTheme.bodyText2,)),
