@@ -81,7 +81,7 @@ class LoginCubit extends Cubit<LoginStates> {
         await createNewPage(context);
       }
       Map<String, dynamic> data =
-      LoginModel(name, phone??'0123456789', email, uid, image,'','',true).toMap();
+      LoginModel(name, phone??'01234567890', email, uid, image,'','',true).toMap();
       FirebaseFirestore.instance
           .collection('users')
           .doc('page ${currentPage}')
@@ -90,6 +90,7 @@ class LoginCubit extends Cubit<LoginStates> {
           .set(data)
           .then((value) {
         updatePageSize(context);
+        saveUserDataInAllUsers(context: context,email: email,name: name,phone: phone??'01234567890',image: image,uid: uid);
       }).catchError((onError) {
         print(onError.toString());
       });
@@ -101,18 +102,16 @@ class LoginCubit extends Cubit<LoginStates> {
   {
     if(await checkInternet())
       {
-        for(int i = 1 ; i <=currentPage;i++)
-          {
+
             QuerySnapshot<Map<String,dynamic>> data=await FirebaseFirestore.instance
                 .collection("users")
-                .doc('page ${i}')
+                .doc('all users')
                 .collection('users')
                 .where('uid',isEqualTo: uid)
                 .get();
 
             if(data.docs.length==0)
               return true;
-          }
 
       }else
           showSnackBar(context);
@@ -212,6 +211,7 @@ class LoginCubit extends Cubit<LoginStates> {
     }else
       showSnackBar(context);
   }
+
   int currentPage=1;
   Future<void> getCurrentPage(context)async
   {
@@ -227,5 +227,39 @@ class LoginCubit extends Cubit<LoginStates> {
       showSnackBar(context);
 
   }
+
+  Future<void> saveUserDataInAllUsers({@required context,
+    @required String name,
+    @required String phone,
+    @required String email,
+    @required String uid,
+    @required String image,}) async {
+    if (await checkInternet()) {
+
+
+      Map<String, dynamic> data =
+      LoginModel(
+          name,
+          phone,
+          email,
+          uid,
+          image,
+          '',
+          '',
+          false).toMap();
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc('all users')
+          .collection('users')
+          .doc(uId)
+          .set(data)
+          .then((value) {
+      }).catchError((onError) {
+        toastMessage(msg: 'Something Went Wrong', state: 2);
+      });
+    } else
+      showSnackBar(context);
+  }
+
 
 }

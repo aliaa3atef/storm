@@ -44,7 +44,7 @@ class ChatScreen extends StatelessWidget {
             builder: (context, state) {
               isOpened=true;
               var cubit = ChatCubit.get(context);
-              cubit.getUserData(HomeCubit.globalData.getUserData());
+            //  cubit.getUserData(HomeCubit.globalData.getUserData());
               cubit.getUserToken(receiverId);
               return Scaffold(
                 appBar: AppBar(

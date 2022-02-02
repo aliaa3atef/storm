@@ -41,18 +41,14 @@ class HomeCubit extends Cubit<HomeStates> {
 
   LoginModel _model ;
 
-  LoginModel getUserData() {
+    Future<LoginModel>  getUserData()async {
     emit(HomeGetUserLoadingState());
-    FirebaseFirestore.instance.collection('users').doc(uId).get().then((value) {
+      DocumentSnapshot<Map<String,dynamic>> value = await FirebaseFirestore.instance.collection('users').doc('all users').collection('users').doc(uId).get();
       _model = LoginModel.fromJson(value.data());
       emit(HomeGetUserSuccessState());
       return _model;
-    }).catchError((onError) {
-      print(onError.toString());
-      emit(HomeGetUserErrorState());
-    });
-    return null;
-  }
+
+    }
 
   List _screens = [
      ChatsScreen(),

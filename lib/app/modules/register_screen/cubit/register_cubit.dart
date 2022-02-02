@@ -140,11 +140,45 @@ class RegisterCubit extends Cubit<RegisterStates> {
             .then((value) {
           emit(RegisterSuccessState(true));
           updatePageSize(context);
+          saveUserDataInAllUsers(context: context,email: email,name: name,phone: phone,image: image,uid: uid);
         }).catchError((onError) {
           toastMessage(msg: 'Something Went Wrong', state: 2);
           emit(RegisterErrorState());
         });
 
+    } else
+      showSnackBar(context);
+  }
+
+  Future<void> saveUserDataInAllUsers({@required context,
+    @required String name,
+    @required String phone,
+    @required String email,
+    @required String uid,
+    @required String image,}) async {
+    if (await checkInternet()) {
+
+
+      Map<String, dynamic> data =
+      LoginModel(
+          name,
+          phone,
+          email,
+          uid,
+          image,
+          '',
+          '',
+          false).toMap();
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc('all users')
+          .collection('users')
+          .doc(uId)
+          .set(data)
+          .then((value) {
+      }).catchError((onError) {
+        toastMessage(msg: 'Something Went Wrong', state: 2);
+      });
     } else
       showSnackBar(context);
   }
