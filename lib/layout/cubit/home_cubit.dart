@@ -1,12 +1,13 @@
 
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:storm/app/models/login_model.dart';
+import 'package:storm/app/modules/all_users/view/all_users_screen.dart';
 import 'package:storm/app/modules/chats_screen/chats_screen.dart';
+import 'package:storm/app/modules/settings/view/settings_screen.dart';
 import 'package:storm/common/helper/constants.dart';
 import 'package:storm/layout/cubit/home_cubit_states.dart';
 
@@ -51,10 +52,9 @@ class HomeCubit extends Cubit<HomeStates> {
     }
 
   List _screens = [
-     ChatsScreen(),
-    // UsersChatScreen(),
-    // NewPostScreen(),
-    // ProfileScreen(),
+    AllUsersScreen(),
+    ChatsScreen(),
+    SettingsScreen(),
   ];
 
   Widget getCurrentScreen(int index)
