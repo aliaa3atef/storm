@@ -1,65 +1,63 @@
-
 import 'package:conditional_builder/conditional_builder.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:storm/app/modules/login_screen/login_screen.dart';
+import 'package:storm/app/modules/forgetpassword_screen/forgetpasswor_screen.dart';
+import 'package:storm/app/modules/register_screen/register_screen.dart';
 import 'package:storm/common/colors/colors.dart';
 import 'package:storm/common/ui/DefualtTextButton.dart';
 import 'package:storm/common/ui/DefualtTextFormField.dart';
+import 'package:storm/common/ui/GoogleSignInButton.dart';
 import 'package:storm/common/ui/TitleText.dart';
 import 'package:storm/common/ui/methods.dart';
 
-import 'cubit/register_cubit.dart';
-import 'cubit/register_cubit_states.dart';
+import 'cubit/login_cubit.dart';
+import 'cubit/login_cubit_states.dart';
 
-class RegisterScreen extends StatelessWidget {
+class LoginScreen extends StatelessWidget {
   final TextEditingController email = TextEditingController();
-  final TextEditingController name = TextEditingController();
-  final TextEditingController phone = TextEditingController();
   final TextEditingController pass = TextEditingController();
-  var keysss = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RegisterCubit()..getCurrentPage(context),
-      child: BlocConsumer<RegisterCubit, RegisterStates>(
+      create: (context) => LoginCubit()..getCurrentPage(context),
+      child: BlocConsumer<LoginCubit, LoginStates>(
         listener: (context, state) {},
         builder: (context, state) {
-          var cubit = RegisterCubit.get(context);
+          var cubit = LoginCubit.get(context);
           return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-            ),
-            body: Form(
-              key: keysss,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+            body: SingleChildScrollView(
+              child: Form(
+                key: formKey,
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    //mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Register with your email',style: Theme.of(context).textTheme.headline2,),
-                      const SizedBox(
-                        height: 50.0,
+                      Container(
+                        width: double.infinity,
+
+                        margin: EdgeInsets.only(left: 20,right: 20,top: 150,bottom: 5),
+                        padding: EdgeInsets.all(5),
+                        child: Center(child: TitleText("Hello Again!")),
                       ),
-                      DefaultTextFormField(
-                        hint: 'User Name',
-                        validate: (value) {
-                          if (value.isEmpty) {
-                            return 'User Name Must Not Be Empty';
-                          }
-                          return null;
-                        },
-                        prefixicon: Icon(Icons.person),
-                        controller: name,
-                        type: TextInputType.text,
+                      Container(
+                        width: double.infinity,
+
+                        margin: EdgeInsets.only(left: 10,right: 10,bottom: 15),
+                        padding: EdgeInsets.all(10),
+                        child: Center(child: Text("Welcome back you've been missed!",style: Theme.of(context).textTheme.subtitle2,),),
                       ),
                       const SizedBox(
-                        height: 15.0,
+                        height: 20.0,
                       ),
                       DefaultTextFormField(
-                       hint: 'email@example.com',
+                        hint: 'email@example.com',
                         validate: (String value) {
                           if (value.isEmpty) {
                             return 'Email Address Must Not Be Empty';
@@ -72,7 +70,7 @@ class RegisterScreen extends StatelessWidget {
                         controller: email,
                         type: TextInputType.emailAddress,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15.0,
                       ),
                       DefaultTextFormField(
@@ -94,44 +92,49 @@ class RegisterScreen extends StatelessWidget {
                           return null;
                         },
                       ),
-                      SizedBox(
+                      Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            onTap: (){
+                              NavigateTo(context, ForgetPasswordScreen());
+                            },
+                            child: Text('Forget password?',style: Theme.of(context).textTheme.subtitle1,),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
                         height: 20.0,
                       ),
-                      DefaultTextFormField(
-                        prefixicon: Icon(Icons.phone),
-                        controller: phone,
-                        type: TextInputType.phone,
-                        hint: 'Phone',
-                        validate: (String value) {
-                          if (value.length!=11) {
-                            return 'Phone must be 11 digit';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(
-                        height: 30.0,
-                      ),
                       ConditionalBuilder(
-                        condition: state is !RegisterLoadingState,
-                        builder: (context) => DefaultButton(
-                            color: basicColor,
-                            fun: () {
-                              if (keysss.currentState.validate()) {
-
-                                    cubit.createUserRegister(
-                                      name: name.text,
-                                      phone: phone.text,
-                                      email: email.text,
-                                      password: pass.text,
+                        condition: state is! LoginLoadingState,
+                        builder: (context) => Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18.0)),
+                          child: DefaultButton(
+                              fun: () {
+                                if (formKey.currentState.validate()) {
+                                  cubit.userLogin(
                                       context: context,
-                                    );
-
-                              }
-                            },
-                            child: Text('Register'.toUpperCase() ,style: Theme.of(context).textTheme.bodyText2,)),
-                        fallback: (context) => Center(child: CircularProgressIndicator()),
+                                      email: email.text,
+                                      password: pass.text);
+                                }
+                              },
+                              child: Text(
+                                'LOGIN',
+                                style: Theme.of(context).textTheme.subtitle2,
+                              )),
+                        ),
+                        fallback: (context) => Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      GoogleSignInButton(),
                       const SizedBox(
                         height: 10.0,
                       ),
@@ -139,21 +142,21 @@ class RegisterScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Already have an account?',
+                            'Don\'t Have an Account?',
                             style: Theme.of(context).textTheme.subtitle2,
                           ),
                           TextButton(
                               onPressed: () {
-                                NavigateTo(context, LoginScreen());
+                                NavigateTo(context, RegisterScreen());
                               },
                               child: Text(
-                                'Login now',
+                                'Register Now',
                                 style: Theme.of(context)
                                     .textTheme
                                     .subtitle1
                                     .copyWith(
-                                  color: basicColor,
-                                ),
+                                      color: basicColor,
+                                    ),
                               ))
                         ],
                       ),

@@ -1,4 +1,3 @@
-import 'dart:html';
 
 import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,8 +5,16 @@ import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:storm/app/models/message_model.dart';
 import 'package:storm/app/modules/chat_screen/cubit/chat_cubit.dart';
 import 'package:storm/app/modules/chat_screen/cubit/chat_cubit_states.dart';
+import 'package:storm/common/colors/colors.dart';
+import 'package:storm/common/helper/constants.dart';
+import 'package:storm/common/icons/icon_broken.dart';
+import 'package:storm/common/ui/ImageViewer.dart';
+import 'package:storm/common/ui/Video_Player.dart';
+import 'package:storm/common/ui/methods.dart';
+import 'package:storm/layout/cubit/home_cubit.dart';
 import 'package:video_player/video_player.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -28,18 +35,16 @@ class ChatScreen extends StatelessWidget {
          isOpened = false;
       return true ;
     },
-    child: BlocConsumer<SocialHomeCubit, SocialHomeStates>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        isOpened=true;
-        return BlocProvider(
+
+        child: BlocProvider(
           create: (context) => ChatCubit()..getMessages(receiverId: receiverId),
           child: BlocConsumer<ChatCubit,ChatCubitStates>(
             listener: (context, state) {
             },
             builder: (context, state) {
+              isOpened=true;
               var cubit = ChatCubit.get(context);
-              cubit.getUserData(SocialHomeCubit.get(context).model);
+            //  cubit.getUserData(HomeCubit.globalData.getUserData());
               cubit.getUserToken(receiverId);
               return Scaffold(
                 appBar: AppBar(
@@ -151,7 +156,7 @@ class ChatScreen extends StatelessWidget {
                                           onPressed: () {
                                             showBottomSheet(context: context, builder: (context)=>bottomSheetChooseBuilder(context)) ;
                                           },
-                                          color: defColor,
+                                          color: basicColor,
                                           icon: Icon(IconBroken.Camera),
                                         ),
                                         if(state is ChatCubitUploadingMessageImageState||state is ChatCubitUploadingMessageVideoState)
@@ -173,7 +178,7 @@ class ChatScreen extends StatelessWidget {
                                         }
                                         messageController.text = '';
                                       },
-                                      color: defColor,
+                                      color: basicColor,
                                       icon: Icon(IconBroken.Send),
                                     ),
                                   ],
@@ -189,8 +194,8 @@ class ChatScreen extends StatelessWidget {
               );
             },
           ),
-        );
-      },
+
+
     )
     );
   }
@@ -245,7 +250,7 @@ class ChatScreen extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
         decoration: BoxDecoration(
-          color: defColor,
+          color: basicColor,
           borderRadius: BorderRadius.circular(10.0),
         ),
         child:model.text!=''? Text(

@@ -1,16 +1,16 @@
-abstract class SocialRegisterStates{}
+abstract class RegisterStates{}
 
-class SocialRegisterInitalState extends SocialRegisterStates{}
+class RegisterInitalState extends RegisterStates{}
 
-class SocialRegisterLoadingState extends SocialRegisterStates{}
+class RegisterLoadingState extends RegisterStates{}
 
-class SocialRegisterSuccessState extends SocialRegisterStates{
+class RegisterSuccessState extends RegisterStates{
   bool isDone = false;
 
-  SocialRegisterSuccessState(this.isDone);
+  RegisterSuccessState(this.isDone);
 }
 
-class SocialRegisterErrorState extends SocialRegisterStates{}
+class RegisterErrorState extends RegisterStates{}
 
-class SocialRegisterChangeVisPassState extends SocialRegisterStates{}
+class RegisterChangeVisPassState extends RegisterStates{}
 
