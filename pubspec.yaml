@@ -63,6 +63,7 @@ dependencies:
   google_sign_in: ^5.2.3
   connectivity: ^3.0.6
   font_awesome_flutter: ^8.10.0
+  group_radio_button: ^1.2.0
 
 dependency_overrides:
   device_preview: 0.8.0
@@ -104,8 +105,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/images/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

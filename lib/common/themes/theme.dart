@@ -5,14 +5,14 @@ import 'package:storm/common/colors/colors.dart';
 
 ThemeData darkTheme = ThemeData(
   primarySwatch: basicColor ,
-  scaffoldBackgroundColor: Colors.grey[900],
+  scaffoldBackgroundColor: HexColor('33312b'),
   appBarTheme: AppBarTheme(
     titleSpacing: 20.0,
     systemOverlayStyle: SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
     ),
-    backgroundColor: Colors.grey[800],
+    backgroundColor: HexColor('33312b'),
     elevation: 0.0,
     titleTextStyle: TextStyle(
       fontFamily: 'Jannah',
@@ -24,7 +24,9 @@ ThemeData darkTheme = ThemeData(
       color: Colors.white,
     ),
   ),
-
+  dividerTheme: DividerThemeData(
+    color: Colors.grey,
+  ),
   fontFamily: 'Jannah',
     colorScheme: ColorScheme(
       primary:Colors.orange,
@@ -74,6 +76,9 @@ ThemeData lightTheme = ThemeData(
     caption: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300, color:Colors.grey , height: 1.2),
   ),
   primarySwatch: basicColor,
+  dividerTheme: DividerThemeData(
+    color: Colors.black12,
+  ),
   scaffoldBackgroundColor: HexColor('#FCFCFC'),
   appBarTheme: AppBarTheme(
     titleSpacing: 20.0,

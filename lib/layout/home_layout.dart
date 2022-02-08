@@ -48,13 +48,13 @@ class HomeLayout extends StatelessWidget {
                 size: 30.0,
                 color: Theme.of(context).colorScheme.onBackground,
               ),
+              // Icon(
+              //   IconBroken.Plus,
+              //   size: 30.0,
+              //   color: Theme.of(context).colorScheme.onBackground,
+              // ),
               Icon(
-                IconBroken.Plus,
-                size: 30.0,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-              Icon(
-                IconBroken.User,
+                IconBroken.Setting,
                 size: 30.0,
                 color: Theme.of(context).colorScheme.onBackground,
               ),
